@@ -31,11 +31,11 @@ The automation flow works as follows:
 
 ### Workflow
 
-![Workflow](screenshots/workflow)
+![Workflow](screenshots/workflow.png)
 
 ### Email Result
 
-![Email](screenshots/mail)
+![Email](screenshots/mail.png)
 
 ---
 
