@@ -1,0 +1,144 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "52e609a5-ae36-49a0-ba05-0265c345ce46",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "913d2151-7cf5-450b-aba0-7b638938b159",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Gold price is {{ $json.price }}   USDT.\n\nWrite a very short market summary."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "6067692c-359d-40ea-b339-aeb4f446b5f6",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "tDxUKyQr1ymxCn99",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "talhapakdil7@gmail.com",
+        "subject": "Daily gold market analysis",
+        "message": "=Gold Price:  {{ $('HTTP Request').item.json.price }}\nAI Market Summary:\n{{ $json.output[0].content[0].text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        0
+      ],
+      "id": "87178d29-fe2e-472c-be0d-1ef25fdd667f",
+      "name": "Send a message",
+      "webhookId": "732dbfb8-cb09-4284-9608-8dbc42da420b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "BMqKUjxt8mSqksWe",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "730286bd-72ab-4dae-af1f-4519aed5e18b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "50f30145d39bad99a2726b48ea70218ac283a8349cadbe40bb68e8a924d4fb94"
+  },
+  "id": "LdbZd6YD9rk1nYe8",
+  "tags": []
+}
